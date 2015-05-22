@@ -1,6 +1,7 @@
  // This is used to plot the formula.
  function displayFormula() {
-    var k = bigInt(document.forms["plotFormula"]["k"].value);
+    // Currently rounds down to the nearest multiple of 17.
+    var k = bigInt(document.forms["plotFormula"]["k"].value).divide(17).toString(2);
     if (false){
         alert("Please enter a number.");   
     } else {
@@ -42,26 +43,18 @@
         context.fillText("0", 56, 166);
         context.fillText("106", 685, 166);
 
-        var baseXPower = bigInt(2);
-        for (x = 0; x < 106; x++){
-            for (y = k; y.lesser(k.plus(17)); y.plus(1)){
-                var power = baseXPower;
-                for (i = bigInt(0); i.lesser(y.mod(17)); i.plus(1)){
-                    power = power.times(2);
+        for (x = 105; x >= 0; x--){
+            for (y = 16; y >= 0; y--){
+                var colour = false;
+                if (k.length > 0){
+                    if (k.substr(k.length - 1) == "1"){
+                        colour = true;
+                    }
+                    k = k.slice(0, -1);
                 }
-                console.log(power);
-                var test_val = bigInt(y).divide(17).divide(power).valueOf();
-                console.log(test_val);
-                //test_val = Math.floor((Math.floor(y/17) / power) % 2);
-                //var test = Math.floor(y/17);
-                //console.log(test);
-                //console.log(test_val);
-                if (test_val > 0.5){
-                    context.fillRect(60 + x*6, 126 - (y.minus(k).valueOf())*6, 6, 6);
+                if (colour){
+                    context.fillRect(60 + x*6, 126 - (y)*6, 6, 6);
                 }
-            }
-            for (j = 0; j < 17; j++){
-                baseXPower = baseXPower.times(2);
             }
         }
     }
