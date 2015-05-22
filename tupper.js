@@ -95,6 +95,21 @@ function drawClick(event){
 
     // Redraw the grid.
     drawGrid();
+
+    // Calculate the new k value.
+    var binaryString = ""
+    for (var i = 0; i < 106; i++){
+        for (var j = 16; j >= 0; j--){
+            if (draw_grid_colored[i][j]){
+                binaryString += "1";
+            } else {
+                binaryString += "0";
+            }
+        }
+    }
+    var k = bigInt(binaryString, 2).times(17).toString(10);
+    var k_textarea = document.getElementById("k_textarea");
+    k_textarea.value = k;
 }
 
 function drawAxes(){
@@ -142,6 +157,8 @@ function setUp(){
     drawAxes();
     var drawing_canvas = document.getElementById("draw");
     drawing_canvas.addEventListener("mousedown", drawClick, false);
+    var k_textarea = document.getElementById("k_textarea");
+    k_textarea.value = "0";
 }
 
 window.onload = setUp;
