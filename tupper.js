@@ -112,6 +112,17 @@ function drawClick(event){
     k_textarea.value = k;
 }
 
+function clearGrid(){
+    for (var i = 0; i < 106; i++){
+        for (var j = 0; j < 17; j++){
+            draw_grid_colored[i][j] = false;
+        }
+    }
+    drawGrid();
+    var k_textarea = document.getElementById("k_textarea");
+    k_textarea.value = "0";
+}
+
 function drawAxes(){
     var plotting_canvas = document.getElementById("plot");
     var plotting_context = plotting_canvas.getContext("2d");
