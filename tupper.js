@@ -138,17 +138,7 @@ function drawClick(event){
     drawGrid();
 
     // Calculate the new k value.
-    var binaryString = ""
-    for (var i = 0; i < 106; i++){
-        for (var j = 16; j >= 0; j--){
-            if (draw_grid_colored[i][j]){
-                binaryString += "1";
-            } else {
-                binaryString += "0";
-            }
-        }
-    }
-    var k = bigInt(binaryString, 2).times(17).toString(10);
+    var k = calculateK();
     var k_textarea = document.getElementById("k_textarea");
     k_textarea.value = k;
 }
@@ -162,6 +152,41 @@ function clearGrid(){
     drawGrid();
     var k_textarea = document.getElementById("k_textarea");
     k_textarea.value = "0";
+}
+
+function invertGrid(){
+    for (var i = 0; i < 106; i++){
+        for (var j = 0; j < 17; j++){
+            // For each element in the grid.
+
+            // Invert the value of the element.
+            draw_grid_colored[i][j] = (draw_grid_colored[i][j] == false);
+        }
+    }
+    // Redraw the grid.
+    drawGrid();
+
+    // Recalculate the correct k value.
+    var k = calculateK();
+    var k_textarea = document.getElementById("k_textarea");
+    k_textarea.value = k;
+}
+
+// Calculate the correct k value for the grid in the
+// draw_grid_colored array.
+function calculateK(){
+    var binaryString = "";
+    for (var i = 0; i < 106; i++){
+        for (var j = 16; j >= 0; j--){
+            if (draw_grid_colored[i][j]){
+                binaryString += "1";
+            } else {
+                binaryString += "0";
+            }
+        }
+    }
+    var k = bigInt(binaryString, 2).times(17).toString(10);
+    return k;
 }
 
 function drawAxes(){
