@@ -8,8 +8,12 @@
 
  // This is used to plot the formula.
  function displayFormula() {
-    // Currently rounds down to the nearest multiple of 17.
-    var k = bigInt(document.getElementById("k").value).divide(17).toString(2);
+    // Calculate the string for the lower and higher multiples of 17.
+    var input = bigInt(document.getElementById("k").value);
+    var remainder = input.mod(17);
+    var k = input.divide(17);
+    var lower_string = k.toString(2);
+    var higher_string = k.add(1).toString(2);
     if (false){
         alert("Please enter a number.");   
     } else {
@@ -19,17 +23,54 @@
 
         drawAxes();
 
+        // Loop over columns, begining at the right side.
         for (x = 105; x >= 0; x--){
-            for (y = 16; y >= 0; y--){
-                var colour = false;
-                if (k.length > 0){
-                    if (k.substr(k.length - 1) == "1"){
-                        colour = true;
-                    }
-                    k = k.slice(0, -1);
+
+            // Remove the unused values for this column in the higher string.
+            if (remainder > 0){
+                if (higher_string.length >= (17 - remainder)){
+                   higher_string = higher_string.slice(0, -(17 - remainder));
+                } else {
+                    higher_string = "";
                 }
+            }
+
+            // Loop over the row in the column, beginning at the top.
+            for (y = 16; y >= 0; y--){
+
+                // Should this cell be coloured?
+                var colour = false;
+
+                if ((17 - y) <= remainder){
+                    // If we're in the region of the higher number.
+                    if (higher_string.length > 0){
+                        if (higher_string.substr(higher_string.length - 1) == "1"){
+                            colour = true;
+                        }
+                        higher_string = higher_string.slice(0, -1);
+                    }
+                } else {
+                    // if we're in the region of the smaller number.
+                    if (lower_string.length > 0){
+                        if (lower_string.substr(lower_string.length - 1) == "1"){
+                            colour = true;
+                        }
+                        lower_string = lower_string.slice(0, -1);
+                    }
+                }
+
+                // Colour the cell if needed.
                 if (colour){
                     plotting_context.fillRect(60 + x*6, 126 - (y)*6, 6, 6);
+                }
+            }
+
+            // Remove the unused values for this column in the lower string.
+            if (remainder > 0){
+                if (lower_string.length >= remainder){
+                    lower_string = lower_string.slice(0, -remainder);
+                } else {
+                    lower_string = "";
                 }
             }
         }
