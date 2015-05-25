@@ -8,70 +8,72 @@
 
  // This is used to plot the formula.
  function displayFormula() {
-    // Calculate the string for the lower and higher multiples of 17.
-    var input = bigInt(document.getElementById("k").value);
-    var remainder = input.mod(17);
-    var k = input.divide(17);
-    var lower_string = k.toString(2);
-    var higher_string = k.add(1).toString(2);
-    if (false){
-        alert("Please enter a number.");   
-    } else {
-        var plotting_canvas = document.getElementById("plot");
-        var plotting_context = plotting_canvas.getContext("2d");
-        plotting_context.clearRect(0, 0, plotting_canvas.width, plotting_canvas.height);
+    try {
+        // Calculate the string for the lower and higher multiples of 17.
+        var input = bigInt(document.getElementById("k").value);
+        var remainder = input.mod(17);
+        var k = input.divide(17);
+        var lower_string = k.toString(2);
+        var higher_string = k.add(1).toString(2);
+    } catch(err){
+        alert("Please enter a valid number.");
+        throw "Could not parse k.";   
+    }
+ 
+    var plotting_canvas = document.getElementById("plot");
+    var plotting_context = plotting_canvas.getContext("2d");
+    plotting_context.clearRect(0, 0, plotting_canvas.width, plotting_canvas.height);
 
-        drawAxes();
+    drawAxes();
 
-        // Loop over columns, begining at the right side.
-        for (x = 105; x >= 0; x--){
+    // Loop over columns, begining at the right side.
+    for (x = 105; x >= 0; x--){
 
-            // Remove the unused values for this column in the higher string.
-            if (remainder > 0){
-                if (higher_string.length >= (17 - remainder)){
-                   higher_string = higher_string.slice(0, -(17 - remainder));
-                } else {
-                    higher_string = "";
+        // Remove the unused values for this column in the higher string.
+        if (remainder > 0){
+            if (higher_string.length >= (17 - remainder)){
+               higher_string = higher_string.slice(0, -(17 - remainder));
+            } else {
+                higher_string = "";
+            }
+        }
+
+        // Loop over the row in the column, beginning at the top.
+        for (y = 16; y >= 0; y--){
+
+            // Should this cell be coloured?
+            var colour = false;
+
+            if ((17 - y) <= remainder){
+                // If we're in the region of the higher number.
+                if (higher_string.length > 0){
+                    if (higher_string.substr(higher_string.length - 1) == "1"){
+                        colour = true;
+                    }
+                    higher_string = higher_string.slice(0, -1);
+                }
+            } else {
+                // if we're in the region of the smaller number.
+                if (lower_string.length > 0){
+                    if (lower_string.substr(lower_string.length - 1) == "1"){
+                        colour = true;
+                    }
+                    lower_string = lower_string.slice(0, -1);
                 }
             }
 
-            // Loop over the row in the column, beginning at the top.
-            for (y = 16; y >= 0; y--){
-
-                // Should this cell be coloured?
-                var colour = false;
-
-                if ((17 - y) <= remainder){
-                    // If we're in the region of the higher number.
-                    if (higher_string.length > 0){
-                        if (higher_string.substr(higher_string.length - 1) == "1"){
-                            colour = true;
-                        }
-                        higher_string = higher_string.slice(0, -1);
-                    }
-                } else {
-                    // if we're in the region of the smaller number.
-                    if (lower_string.length > 0){
-                        if (lower_string.substr(lower_string.length - 1) == "1"){
-                            colour = true;
-                        }
-                        lower_string = lower_string.slice(0, -1);
-                    }
-                }
-
-                // Colour the cell if needed.
-                if (colour){
-                    plotting_context.fillRect(60 + x*6, 126 - (y)*6, 6, 6);
-                }
+            // Colour the cell if needed.
+            if (colour){
+                plotting_context.fillRect(60 + x*6, 126 - (y)*6, 6, 6);
             }
+        }
 
-            // Remove the unused values for this column in the lower string.
-            if (remainder > 0){
-                if (lower_string.length >= remainder){
-                    lower_string = lower_string.slice(0, -remainder);
-                } else {
-                    lower_string = "";
-                }
+        // Remove the unused values for this column in the lower string.
+        if (remainder > 0){
+            if (lower_string.length >= remainder){
+                lower_string = lower_string.slice(0, -remainder);
+            } else {
+                lower_string = "";
             }
         }
     }
