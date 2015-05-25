@@ -33,8 +33,9 @@
         <input style="float:right; margin-right:20px; margin-top:10px;" type="button" onClick="invertGrid()" value="Invert Grid">
         <p>Here's the corresponding k value:</p>
         <div style="margin-left:12px;">
-            <textarea id="k_textarea" style="width:776px; height:200px;"></textarea>
+            <textarea id="k_textarea" style="width:776px; height:200px;" oninput="updateGridFromTextArea()"></textarea>
         </div>
+        <p>Note: you can also type in the above box to create your image.</p>
     </div>
 </body>
 </html>
