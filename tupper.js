@@ -10,11 +10,15 @@
  function displayFormula() {
     try {
         // Calculate the string for the lower and higher multiples of 17.
-        var input = bigInt(document.getElementById("k").value);
-        var remainder = input.mod(17);
-        var k = input.divide(17);
-        var lower_string = k.toString(2);
-        var higher_string = k.add(1).toString(2);
+        if (document.getElementById("k").value.indexOf("e") == -1){
+            var input = bigInt(document.getElementById("k").value);
+            var remainder = input.mod(17);
+            var k = input.divide(17);
+            var lower_string = k.toString(2);
+            var higher_string = k.add(1).toString(2);
+        } else {
+            throw "Could not parse k.";
+        }
     } catch(err){
         alert("Please enter a valid number.");
         throw "Could not parse k.";   
@@ -121,21 +125,23 @@ function drawGrid(){
 
 // Called when the user clicks on the drawing canvas.
 function drawClick(event){
+
+    // Determine where the user clicked.
     // Position code credit to http://miloq.blogspot.co.uk/2011/05/coordinates-mouse-click-canvas.html
     var x = new Number();
     var y = new Number();
     var drawing_canvas = document.getElementById("draw");
 
-    x = event.clientX + document.body.scrollLeft;// + document.documentElement.scrollLeft;
-    y = event.clientY + document.body.scrollTop;// + document.documentElement.scrollTop;
+    x = event.clientX + document.body.scrollLeft;
+    y = event.clientY + document.body.scrollTop;
 
     x -= drawing_canvas.offsetLeft;
     y -= drawing_canvas.offsetTop;
-    console.log("clientY: " + event.clientY + " bodyScroll: " + document.body.scrollTop + " elementScroll: " + document.documentElement.scrollTop);
-    console.log("x: " + x + " y: " + y);
+
     var cell_x = Math.floor(x / 7);
     var cell_y = Math.floor(y / 7);
 
+    // Invert the cell which was clicked on.
     draw_grid_colored[cell_x][cell_y] = (draw_grid_colored[cell_x][cell_y] == false);
 
     // Redraw the grid.
@@ -147,6 +153,7 @@ function drawClick(event){
     k_textarea.value = k;
 }
 
+// Called when the 'clear grid' button is pressed.
 function clearGrid(){
     for (var i = 0; i < 106; i++){
         for (var j = 0; j < 17; j++){
@@ -158,6 +165,7 @@ function clearGrid(){
     k_textarea.value = "0";
 }
 
+// Called when the 'invert grid' button is pressed.
 function invertGrid(){
     for (var i = 0; i < 106; i++){
         for (var j = 0; j < 17; j++){
@@ -179,11 +187,15 @@ function invertGrid(){
 function updateGridFromTextArea(){
      try {
         // Calculate the string for the lower and higher multiples of 17.
-        var input = bigInt(document.getElementById("k_textarea").value);
-        var remainder = input.mod(17);
-        var k = input.divide(17);
-        var lower_string = k.toString(2);
-        var higher_string = k.add(1).toString(2);
+        if (document.getElementById("k_textarea").value.indexOf("e") == -1){
+            var input = bigInt(document.getElementById("k_textarea").value);
+            var remainder = input.mod(17);
+            var k = input.divide(17);
+            var lower_string = k.toString(2);
+            var higher_string = k.add(1).toString(2);
+        } else {
+            throw "Could not parse textarea.";
+        }
     } catch(err){
         throw "Could not parse textarea.";   
     }
