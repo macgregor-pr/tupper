@@ -8,129 +8,31 @@
 
  // This is used to plot the formula.
  function displayFormula() {
-    try {
-        // Calculate the string for the lower and higher multiples of 17.
-        if (document.getElementById("k").value.indexOf("e") == -1){
-            var input = bigInt(document.getElementById("k").value);
-            var remainder = input.mod(17);
-            var k = input.divide(17);
-            var lower_string = k.toString(2);
-            var higher_string = k.add(1).toString(2);
-        } else {
-            throw "Could not parse k.";
-        }
-    } catch(err){
-        alert("Please enter a valid number.");
-        throw "Could not parse k.";   
-    }
- 
+
     var plotting_canvas = document.getElementById("plot");
     var plotting_context = plotting_canvas.getContext("2d");
     plotting_context.clearRect(0, 0, plotting_canvas.width, plotting_canvas.height);
 
     drawAxes();
 
-    // Loop over columns, begining at the right side.
-    for (x = 105; x >= 0; x--){
-
-        // Remove the unused values for this column in the higher string.
-        if (remainder > 0){
-            if (higher_string.length >= (17 - remainder)){
-               higher_string = higher_string.slice(0, -(17 - remainder));
-            } else {
-                higher_string = "";
-            }
-        }
-
-        // Loop over the row in the column, beginning at the top.
-        for (y = 16; y >= 0; y--){
-
-            // Should this cell be coloured?
-            var colour = false;
-
-            if ((17 - y) <= remainder){
-                // If we're in the region of the higher number.
-                if (higher_string.length > 0){
-                    if (higher_string.substr(higher_string.length - 1) == "1"){
-                        colour = true;
-                    }
-                    higher_string = higher_string.slice(0, -1);
-                }
-            } else {
-                // if we're in the region of the smaller number.
-                if (lower_string.length > 0){
-                    if (lower_string.substr(lower_string.length - 1) == "1"){
-                        colour = true;
-                    }
-                    lower_string = lower_string.slice(0, -1);
-                }
-            }
-
-            // Colour the cell if needed.
-            if (colour){
-                plotting_context.fillRect(60 + x*6, 126 - (y)*6, 6, 6);
-            }
-        }
-
-        // Remove the unused values for this column in the lower string.
-        if (remainder > 0){
-            if (lower_string.length >= remainder){
-                lower_string = lower_string.slice(0, -remainder);
-            } else {
-                lower_string = "";
-            }
-        }
-    }
-}
-
-function drawGrid(){
-    var drawing_canvas = document.getElementById("draw");
-    var drawing_context = drawing_canvas.getContext("2d");
-    drawing_context.clearRect(0, 0, drawing_canvas.width, drawing_canvas.height);
-    drawing_context.lineWidth = 1;
-
-    // Size of canvas: 743 x 120
-
-    drawing_context.beginPath();
-    drawing_context.moveTo(0, 120);
-    drawing_context.lineTo(0, 0);
-    drawing_context.lineTo(743, 0);
-    drawing_context.stroke();
-
-    // Draw the vertical lines.
-    for (i = 1; i < 107; i++){
-        drawing_context.beginPath();
-        drawing_context.moveTo(i*7, 0);
-        drawing_context.lineTo(i*7, 120);
-        drawing_context.stroke();
-    }
-
-    // Draw the horizontal lines.
-    for (i = 1; i < 18; i++){
-        drawing_context.beginPath();
-        drawing_context.moveTo(0, i*7);
-        drawing_context.lineTo(743, i*7);
-        drawing_context.stroke();
-    }
-
     // Fill in the grid.
     for (var i = 0; i < 106; i++){
         for (var j = 0; j < 17; j++){
             if (draw_grid_colored[i][j]){
-                drawing_context.fillRect(i*7, j*7, 7, 7);
+                plotting_context.fillRect(60 + i*6, 30 + j*6, 6, 6);
             }
         }
     }
 }
 
-// Called when the user clicks on the drawing canvas.
+// Called when the user clicks on the plotting canvas.
 function drawClick(event){
 
     // Determine where the user clicked.
     // Position code credit to http://miloq.blogspot.co.uk/2011/05/coordinates-mouse-click-canvas.html
     var x = new Number();
     var y = new Number();
-    var drawing_canvas = document.getElementById("draw");
+    var drawing_canvas = document.getElementById("plot");
 
     x = event.clientX + document.body.scrollLeft;
     y = event.clientY + document.body.scrollTop;
@@ -138,19 +40,25 @@ function drawClick(event){
     x -= drawing_canvas.offsetLeft;
     y -= drawing_canvas.offsetTop;
 
-    var cell_x = Math.floor(x / 7);
-    var cell_y = Math.floor(y / 7);
+    // Subtract the offset within the canvas
+    x -= 60;
+    y -= 30
 
-    // Invert the cell which was clicked on.
-    draw_grid_colored[cell_x][cell_y] = (draw_grid_colored[cell_x][cell_y] == false);
+    var cell_x = Math.floor(x / 6);
+    var cell_y = Math.floor(y / 6);
 
-    // Redraw the grid.
-    drawGrid();
+    if (cell_x >= 0 && cell_x <= 105 && cell_y >= 0 && cell_y <= 16){
+        // Invert the cell which was clicked on.
+        draw_grid_colored[cell_x][cell_y] = (draw_grid_colored[cell_x][cell_y] == false);
 
-    // Calculate the new k value.
-    var k = calculateK();
-    var k_textarea = document.getElementById("k_textarea");
-    k_textarea.value = k;
+        // Redraw the grid.
+        displayFormula();
+
+        // Calculate the new k value.
+        var k = calculateK();
+        var k_textarea = document.getElementById("k");
+        k_textarea.value = k;
+    }
 }
 
 // Called when the 'clear grid' button is pressed.
@@ -160,8 +68,8 @@ function clearGrid(){
             draw_grid_colored[i][j] = false;
         }
     }
-    drawGrid();
-    var k_textarea = document.getElementById("k_textarea");
+    displayFormula();
+    var k_textarea = document.getElementById("k");
     k_textarea.value = "0";
 }
 
@@ -176,19 +84,19 @@ function invertGrid(){
         }
     }
     // Redraw the grid.
-    drawGrid();
+    displayFormula();
 
     // Recalculate the correct k value.
     var k = calculateK();
-    var k_textarea = document.getElementById("k_textarea");
+    var k_textarea = document.getElementById("k");
     k_textarea.value = k;
 }
 
 function updateGridFromTextArea(){
      try {
         // Calculate the string for the lower and higher multiples of 17.
-        if (document.getElementById("k_textarea").value.indexOf("e") == -1){
-            var input = bigInt(document.getElementById("k_textarea").value);
+        if (document.getElementById("k").value.indexOf("e") == -1){
+            var input = bigInt(document.getElementById("k").value);
             var remainder = input.mod(17);
             var k = input.divide(17);
             var lower_string = k.toString(2);
@@ -251,7 +159,7 @@ function updateGridFromTextArea(){
     }
 
     // Redraw the grid.
-    drawGrid();
+    displayFormula();
 }
 
 // Calculate the correct k value for the grid in the
@@ -312,11 +220,10 @@ function drawAxes(){
 }
 
 function setUp(){
-    drawGrid();
     drawAxes();
-    var drawing_canvas = document.getElementById("draw");
-    drawing_canvas.addEventListener("mousedown", drawClick, false);
-    var k_textarea = document.getElementById("k_textarea");
+    var plotting_canvas = document.getElementById("plot");
+    plotting_canvas.addEventListener("mousedown", drawClick, false);
+    var k_textarea = document.getElementById("k");
     k_textarea.value = "0";
 }
 
