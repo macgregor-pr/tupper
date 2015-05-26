@@ -119,18 +119,20 @@ function drawGrid(){
     }
 }
 
+// Called when the user clicks on the drawing canvas.
 function drawClick(event){
     // Position code credit to http://miloq.blogspot.co.uk/2011/05/coordinates-mouse-click-canvas.html
     var x = new Number();
     var y = new Number();
     var drawing_canvas = document.getElementById("draw");
 
-    x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-    y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    x = event.clientX + document.body.scrollLeft;// + document.documentElement.scrollLeft;
+    y = event.clientY + document.body.scrollTop;// + document.documentElement.scrollTop;
 
     x -= drawing_canvas.offsetLeft;
     y -= drawing_canvas.offsetTop;
-
+    console.log("clientY: " + event.clientY + " bodyScroll: " + document.body.scrollTop + " elementScroll: " + document.documentElement.scrollTop);
+    console.log("x: " + x + " y: " + y);
     var cell_x = Math.floor(x / 7);
     var cell_y = Math.floor(y / 7);
 
