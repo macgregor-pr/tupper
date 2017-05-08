@@ -31,6 +31,7 @@ iframe {
     /*Center in the screen*/
     margin-left: auto;
     margin-right: auto;
+    margin-top: 10px;
 
     /*Add a bottom margin for neatness.*/
     margin-bottom: 12px;
