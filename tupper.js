@@ -213,10 +213,10 @@ function drawAxes(){
 
     // Draw the axes labels.
     plotting_context.font = "13px Arial";
-    plotting_context.fillText("k", 30, 35);
-    plotting_context.fillText("k + 17", 0, 137);
-    plotting_context.fillText("0", 692, 166);
-    plotting_context.fillText("106", 50, 166);
+    plotting_context.fillText("k + 17", 0, 35);
+    plotting_context.fillText("k", 30, 137);
+    plotting_context.fillText("0", 56, 166);
+    plotting_context.fillText("106", 685, 166);
 }
 
 function setUp(){
