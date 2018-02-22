@@ -108,8 +108,8 @@ function updateGridFromTextArea(){
         throw "Could not parse textarea.";   
     }
 
-    // Loop over columns, begining at the right side.
-    for (x = 105; x >= 0; x--){
+    // Loop over columns
+    for (x = 0; x < 106; x++){
 
         // Remove the unused values for this column in the higher string.
         if (remainder > 0){
@@ -120,8 +120,8 @@ function updateGridFromTextArea(){
             }
         }
 
-        // Loop over the row in the column, beginning at the top.
-        for (y = 16; y >= 0; y--){
+        // Loop over the row in the column
+        for (y = 0; y < 17; y++){
 
             // Should this cell be coloured?
             var colour = false;
